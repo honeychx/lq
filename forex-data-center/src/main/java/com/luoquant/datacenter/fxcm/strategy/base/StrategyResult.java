@@ -1,7 +1,4 @@
-package com.luoquant.datacenter.fxcm.strategy;
-
-import java.util.Comparator;
-import java.util.List;
+package com.luoquant.datacenter.fxcm.strategy.base;
 
 import java.util.Comparator;
 import java.util.List;

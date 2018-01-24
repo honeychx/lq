@@ -1,4 +1,4 @@
-package com.luoquant.datacenter.fxcm.strategy;
+package com.luoquant.datacenter.fxcm.strategy.base;
 
 import com.luoquant.datacenter.fxcm.CandleStick;
 

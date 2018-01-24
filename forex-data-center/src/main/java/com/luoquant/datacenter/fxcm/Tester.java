@@ -8,9 +8,9 @@ import java.util.List;
 import com.fxcm.fix.Instrument;
 import com.fxcm.fix.UTCDate;
 import com.fxcm.fix.UTCTimeOnly;
-import com.luoquant.datacenter.fxcm.indicator.RsiSignals;
-import com.luoquant.datacenter.fxcm.strategy.Strategy;
-import com.luoquant.datacenter.fxcm.strategy.StrategyResult;
+import com.luoquant.datacenter.fxcm.strategy.RsiStrategy;
+import com.luoquant.datacenter.fxcm.strategy.base.Strategy;
+import com.luoquant.datacenter.fxcm.strategy.base.StrategyResult;
 
 public class Tester {
     public static void main(String[] args) {
@@ -48,13 +48,13 @@ public class Tester {
             miner.displayHistory();
 
             candleSticksList = miner.candleStickList;
-            RsiSignals.calculateRsiForDataSet(candleSticksList, 14);
+            RsiStrategy.calculateRsiForDataSet(candleSticksList, 14);
             for (double i = stopLossPerc; i < stopLossPerc + 0.005; i += 0.0005) {
                 // adjust stop loss
                 for (double j = takeProfitPerc; j < takeProfitPerc + 0.005; j += 0.0005) { // adjust take profit
                     for (int k = bottomRSI; k <= bottomRSI + 20; k += 5) { // adjust bottom and top rsi
-                        Strategy rsiSignals = new RsiSignals(i, j, k);
-                        StrategyResult sr = ((RsiSignals) rsiSignals).runStrategy(candleSticksList);
+                        Strategy rsiSignals = new RsiStrategy(i, j, k);
+                        StrategyResult sr = ((RsiStrategy) rsiSignals).runStrategy(candleSticksList);
                         strategySummary.add(sr);
                     }
                 }
@@ -65,7 +65,7 @@ public class Tester {
 
             System.out.println("10 best results ______________________________________________________________ ");
             for (int i = 0; i < 10; i++) {
-                RsiSignals rs = (RsiSignals) strategySummary.get(i).getStrategy();
+                RsiStrategy rs = (RsiStrategy) strategySummary.get(i).getStrategy();
                 System.out.println("profit:" + (double) Math.round(strategySummary.get(i).getProfit() * 10000) / 100 + "%" + " | max-drawdown:" + (double) Math.round(strategySummary.get(i).getMaxDrawdown() * 10000) / 100 + "%" +
                         " | wins:" + (double) Math.round(10000 * strategySummary.get(i).getWinsRatio()) / 100 + "%" +
                         " | losses:" + (double) Math.round(10000 * strategySummary.get(i).getLossesRatio()) / 100 + "%" +
@@ -74,7 +74,7 @@ public class Tester {
             }
             System.out.println("10 worst results _____________________________________________________________ ");
             for (int i = strategySummary.size() - 1; i > strategySummary.size() - 11; i--) {
-                RsiSignals rs = (RsiSignals) strategySummary.get(i).getStrategy();
+                RsiStrategy rs = (RsiStrategy) strategySummary.get(i).getStrategy();
                 System.out.println("profit: " + (double) Math.round(strategySummary.get(i).getProfit() * 10000) / 100 + "%" + " | max-drawdown:" + (double) Math.round(strategySummary.get(i).getMaxDrawdown() * 10000) / 100 + "%" +
                         " | wins:" + (double) Math.round(10000 * strategySummary.get(i).getWinsRatio()) / 100 + "%" +
                         " | losses:" + (double) Math.round(10000 * strategySummary.get(i).getLossesRatio()) / 100 + "%" +
