@@ -18,9 +18,9 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/src/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/src/lib" recursive="true" />
       </library>
     </orderEntry>
-    <orderEntry type="library" scope="TEST" name="Maven: org.slf4j:slf4j-log4j12:1.7.25" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.25" level="project" />
   </component>
 </module>
