@@ -213,6 +213,7 @@ public class ClientTester {
                 file which it uses for resolving servers. As soon as the login  method executes your listeners
                 begin receiving asynch messages from the FXCM servers.
             */
+            /*70934807 7519 http://www.fxcorporate.com*/
             String username = args[0];
             String password = args[1];
             String terminal = args[2];
