@@ -5,7 +5,7 @@ import java.util.List;
 
 public class StrategyResult implements Comparator<StrategyResult> {
     private double profit;
-    private double maxDrawdown;
+    private double maxDrawDown;
     private double maxProfit;
     private int numOfWinningTrades;
     private int numOfLosingTrades;
@@ -29,13 +29,13 @@ public class StrategyResult implements Comparator<StrategyResult> {
     }
 
 
-    public double getMaxDrawdown() {
-        return maxDrawdown;
+    public double getMaxDrawDown() {
+        return maxDrawDown;
     }
 
 
-    public void setMaxDrawdown(double maxDrawdown) {
-        this.maxDrawdown = maxDrawdown;
+    public void setMaxDrawDown(double maxDrawdown) {
+        this.maxDrawDown = maxDrawdown;
     }
 
 
@@ -113,7 +113,7 @@ public class StrategyResult implements Comparator<StrategyResult> {
                           int numOfLosingTrades, Strategy strategy) {
         this.profit = profit;
         this.maxProfit = maxProfit;
-        this.maxDrawdown = maxDrawdown;
+        this.maxDrawDown = maxDrawdown;
         this.numOfWinningTrades = numOfWinningTrades;
         this.numOfLosingTrades = numOfLosingTrades;
         this.numOfTrades = numOfWinningTrades + numOfLosingTrades;

@@ -21,11 +21,11 @@ public class Tester {
         double takeProfitPerc=0.003;
         int bottomRSI=10;
         List <StrategyResult> strategySummary = new ArrayList<StrategyResult>();
-        String instrument = "GBP/JPY";
+        String instrument = "AUD/USD";
         Instrument asset = new Instrument(instrument);
         // get the current time and roll back 1 year
         Calendar instance = Calendar.getInstance();
-        instance.roll(Calendar.DAY_OF_WEEK, -1);
+        instance.roll(Calendar.YEAR, -1);
         System.out.println(instance.getTime());
         // set the starting date and time of the historical data
         startDate = new UTCDate(instance.getTime());
@@ -66,16 +66,18 @@ public class Tester {
             System.out.println("10 best results ______________________________________________________________ ");
             for (int i = 0; i < 10; i++) {
                 RsiStrategy rs = (RsiStrategy) strategySummary.get(i).getStrategy();
-                System.out.println("profit:" + (double) Math.round(strategySummary.get(i).getProfit() * 10000) / 100 + "%" + " | max-drawdown:" + (double) Math.round(strategySummary.get(i).getMaxDrawdown() * 10000) / 100 + "%" +
+                System.out.println("profit:" + (double) Math.round(strategySummary.get(i).getProfit() * 10000) / 100 +
+                        "%" + " | max-drawdown:" + (double) Math.round(strategySummary.get(i).getMaxDrawDown() * 10000) / 100 + "%" +
                         " | wins:" + (double) Math.round(10000 * strategySummary.get(i).getWinsRatio()) / 100 + "%" +
                         " | losses:" + (double) Math.round(10000 * strategySummary.get(i).getLossesRatio()) / 100 + "%" +
-                        " | s-l:" + (double) Math.round(rs.getStopLoss() * 10000) / 100 + "%" + " | t-p:" + (double) Math.round(rs.getTakeProfit() * 10000) / 100 + "%" + " | bottom-rsi:" + rs.getFloorRSI() +
+                        " | s-l:" + (double) Math.round(rs.getStopLoss() * 10000) / 100 + "%" +
+                        " | t-p:" + (double) Math.round(rs.getTakeProfit() * 10000) / 100 + "%" + " | bottom-rsi:" + rs.getFloorRSI() +
                         " | top-rsi:" + rs.getCeilingRSI() + "\n");
             }
             System.out.println("10 worst results _____________________________________________________________ ");
             for (int i = strategySummary.size() - 1; i > strategySummary.size() - 11; i--) {
                 RsiStrategy rs = (RsiStrategy) strategySummary.get(i).getStrategy();
-                System.out.println("profit: " + (double) Math.round(strategySummary.get(i).getProfit() * 10000) / 100 + "%" + " | max-drawdown:" + (double) Math.round(strategySummary.get(i).getMaxDrawdown() * 10000) / 100 + "%" +
+                System.out.println("profit: " + (double) Math.round(strategySummary.get(i).getProfit() * 10000) / 100 + "%" + " | max-drawdown:" + (double) Math.round(strategySummary.get(i).getMaxDrawDown() * 10000) / 100 + "%" +
                         " | wins:" + (double) Math.round(10000 * strategySummary.get(i).getWinsRatio()) / 100 + "%" +
                         " | losses:" + (double) Math.round(10000 * strategySummary.get(i).getLossesRatio()) / 100 + "%" +
                         " | s-l:" + (double) Math.round(rs.getStopLoss() * 10000) / 100 + "%" + " | t-p:" + (double) Math.round(rs.getTakeProfit() * 10000) / 100 + "%" + " | bottom-rsi:" + rs.getFloorRSI() +
