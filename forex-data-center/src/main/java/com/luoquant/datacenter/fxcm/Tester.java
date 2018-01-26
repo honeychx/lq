@@ -46,7 +46,7 @@ public class Tester {
             // convert rates to candlesticks
             miner.convertHistoricalRatesToCandleSticks(); // display the collected rates
             miner.displayHistory();
-
+            
             candleSticksList = miner.candleStickList;
             RsiStrategy.calculateRsiForDataSet(candleSticksList, 14);
             for (double i = stopLossPerc; i < stopLossPerc + 0.005; i += 0.0005) {

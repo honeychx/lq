@@ -21,6 +21,7 @@ import com.fxcm.messaging.ITransportable;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class HistoryMiner implements IGenericMessageListener, IStatusMessageListener {
     private static final String timeZone = "America/New_York";
@@ -96,7 +97,7 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
     }
 
     public void messageArrived(MarketDataSnapshot mds) {
-//        System.out.println("arrive market data======"+mds);
+        System.out.println("arrive market data======mds.getRequestID()="+mds.getRequestID()+"\t"+mds);
         if (mds.getRequestID() != null && mds.getRequestID().equals(currentRequest))
             historicalRates.put(mds.getDate(), mds);
         if (mds.getRequestID() != null) {
