@@ -18,10 +18,10 @@ public class RSI {
     }
 
     public double getRsiByRs(double rs) {
-        return 100 - 100 / (1 + rs);
+        return Double.valueOf(100 - 100 / (1 + rs));
     }
 
-    public List<Double> getRsiValue(){
+    public List<Double> getRsiValue() {
         return this.rsiValue;
     }
 
@@ -48,11 +48,11 @@ public class RSI {
         for (int i = this.period + 1; i < priceSeries.size(); i++) {
             double diff = this.priceSeries.get(i) - this.priceSeries.get(i - 1);
             if (diff > 0) {
-                avgGain = (firstAvgGain * (this.period - 1) + diff) / this.period;
-                firstAvgGain = avgGain;
+                avgGain = (avgGain * (this.period - 1) + diff) / this.period;
+                avgLoss = (avgLoss * (this.period - 1) + 0.0) / this.period;
             } else {
-                avgLoss = (firstAvgLoss * (this.period - 1) + diff) / this.period;
-                firstAvgLoss = avgLoss;
+                avgLoss = (avgLoss * (this.period - 1) + -1 * diff) / this.period;
+                avgGain = (avgGain * (this.period - 1) + 0.0) / this.period;
             }
 
             rsiValue.add(getRsiByRs(avgGain / avgLoss));
@@ -63,12 +63,12 @@ public class RSI {
     public static void main(String[] args) {
         List<Double> series = new ArrayList<>();
         String priceSeries = "44.34, 44.09, 44.15, 43.61, 44.33, 44.83, 45.10, 45.42, 45.84, 46.08, 45.89, 46.03, 45.61, 46.28, 46.28, 46.00, 46.03, 46.41, 46.22, 45.64, 46.21, 46.25, 45.71, 46.45, 45.78, 45.35, 44.03, 44.18, 44.22, 44.57, 43.42, 42.66, 43.13";
-        for (String price : priceSeries.split(",")){
+        for (String price : priceSeries.split(",")) {
             series.add(Double.valueOf(price));
         }
         RSI rsi = new RSI(series, 14);
         List<Double> rsiValues = rsi.getRsiValue();
-        for (double rsiValue : rsiValues){
+        for (double rsiValue : rsiValues) {
             System.out.println(rsiValue);
         }
     }
