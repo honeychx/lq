@@ -23,6 +23,7 @@ public class CandleStick {
     private double low;
     private double close;
     private double rsi;
+    private double volume;
 
 
     public CandleStick(String date, double openBid, double highBid, double lowBid, double closeBid, double closeAsk) {
@@ -45,6 +46,14 @@ public class CandleStick {
         this.lowBid = lowBid;
         this.closeBid = closeBid;
         this.isAsk = isAsk;
+    }
+
+    public double getVolume() {
+        return volume;
+    }
+
+    public void setVolume(double volume) {
+        this.volume = volume;
     }
 
     public boolean isAsk() {

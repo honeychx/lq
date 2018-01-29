@@ -25,7 +25,7 @@ public class Tester {
         Instrument asset = new Instrument(instrument);
         // get the current time and roll back 1 year
         Calendar instance = Calendar.getInstance();
-        instance.roll(Calendar.YEAR, -1);
+        instance.roll(Calendar.MONTH, -2);
         System.out.println(instance.getTime());
         // set the starting date and time of the historical data
         startDate = new UTCDate(instance.getTime());
@@ -46,8 +46,11 @@ public class Tester {
             // convert rates to candlesticks
             miner.convertHistoricalRatesToCandleSticks(); // display the collected rates
             miner.displayHistory();
+            if (true){
+                System.exit(1);
+            }
 
-            candleSticksList = miner.candleStickList;
+            candleSticksList = miner.candlesticksList;
             RsiStrategy.calculateRsiForDataSet(candleSticksList, 14);
             for (double i = stopLossPerc; i < stopLossPerc + 0.005; i += 0.0005) {
                 // adjust stop loss
