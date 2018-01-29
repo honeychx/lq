@@ -16,6 +16,11 @@
             <version>1.7.25</version>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
             <groupId>fxcm</groupId>
             <artifactId>fxcm-api</artifactId>
             <version>1.0</version>
@@ -35,6 +40,20 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${basedir}/src/lib/tradestation.jar</systemPath>
+        </dependency>
+        <dependency>
+            <artifactId>jfreechart</artifactId>
+            <groupId>org.jfree</groupId>
+            <version>1.0.19</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/lib/jfreechart-1.0.19.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jfreechart</groupId>
+            <artifactId>jcommon</artifactId>
+            <version>1.0.23</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/lib/jcommon-1.0.23.jar</systemPath>
         </dependency>
     </dependencies>
 

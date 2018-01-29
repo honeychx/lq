@@ -29,6 +29,10 @@ import com.fxcm.fix.pretrade.TradingSessionStatus;
 import com.fxcm.messaging.ISessionStatus;
 import com.fxcm.messaging.ITransportable;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.Logger;
+
 public class HistoryMiner implements IGenericMessageListener, IStatusMessageListener {
     private static final String server = "http://www.fxcorporate.com/Hosts.jsp";
     private Instrument asset;
@@ -151,6 +155,7 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
 
     // HistoryMIner.java continued...
     public void messageArrived(MarketDataSnapshot mds) {
+        System.out.println("arrive market data======mds.getRequestID()="+mds.getRequestID()+"\t"+mds);
         if (mds.getRequestID() != null && mds.getRequestID().equals(currentRequest))
             historicalRates.put(mds.getDate(), mds);
         if (mds.getRequestID() != null) {
