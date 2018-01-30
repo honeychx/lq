@@ -1,5 +1,7 @@
 package com.luoquant.datacenter.fxcm;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +30,7 @@ import com.fxcm.fix.pretrade.MarketDataSnapshot;
 import com.fxcm.fix.pretrade.TradingSessionStatus;
 import com.fxcm.messaging.ISessionStatus;
 import com.fxcm.messaging.ITransportable;
+import org.apache.commons.io.FileUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,6 +48,7 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
     private final HashMap<UTCDate, MarketDataSnapshot> historicalRates = new HashMap<>();
     private int dataCounter = 0;
     public List<CandleStick> candlesticksList = new ArrayList<CandleStick>();
+    private List<String> lineBuffer ;
 
     private UTCTimestamp openTimestamp;
     public boolean stillMining = true;
@@ -56,6 +60,7 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
         this.startTime = startTime;
         // create a local LoginProperty
         this.login = new FXCMLoginProperties(username, password, terminal, server);
+        lineBuffer = new ArrayList<>();
     }
 
     // HistoryMIner.java continued...
@@ -156,8 +161,16 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
     // HistoryMIner.java continued...
     public void messageArrived(MarketDataSnapshot mds) {
         System.out.println("arrive market data======mds.getRequestID()="+mds.getRequestID()+"\t"+mds);
-        if (mds.getRequestID() != null && mds.getRequestID().equals(currentRequest))
+        if (mds.getRequestID() != null && mds.getRequestID().equals(currentRequest)) {
             historicalRates.put(mds.getDate(), mds);
+            lineBuffer.add(mds.toString());
+            try {
+                FileUtils.writeLines(new File("F:\\data\\history/" + "audusd" + ".txt"), "utf-8",
+                        lineBuffer, "\n", true);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
         if (mds.getRequestID() != null) {
             dataCounter++;
             if (openTimestamp == null) {

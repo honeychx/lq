@@ -25,7 +25,7 @@ public class Tester {
         Instrument asset = new Instrument(instrument);
         // get the current time and roll back 1 year
         Calendar instance = Calendar.getInstance();
-        instance.roll(Calendar.MONTH, -2);
+        instance.roll(Calendar.YEAR, -2);
         System.out.println(instance.getTime());
         // set the starting date and time of the historical data
         startDate = new UTCDate(instance.getTime());
@@ -89,6 +89,8 @@ public class Tester {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+
         }
     }
 }
