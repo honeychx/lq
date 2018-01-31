@@ -1,10 +1,14 @@
 package com.luoquant.datacenter.fxcm;
 
+import java.util.Date;
+
 /**
  * Created by luoqing on 1/23/18.
  */
 public class CandleStick {
     private String date;
+    private Date startDate;
+    private Date endDate;
     private double openAsk;
     private double highAsk;
     private double lowAsk;
@@ -26,6 +30,9 @@ public class CandleStick {
     private double volume;
 
 
+    public CandleStick(){
+
+    }
     public CandleStick(String date, double openBid, double highBid, double lowBid, double closeBid, double closeAsk) {
         this.date = date;
         this.openBid = openBid;
@@ -46,6 +53,22 @@ public class CandleStick {
         this.lowBid = lowBid;
         this.closeBid = closeBid;
         this.isAsk = isAsk;
+    }
+
+    public void setStartDate(Date startDate){
+        this.startDate = startDate;
+    }
+
+    public Date getStartDate(){
+        return this.startDate;
+    }
+
+    public void setEndDate(Date date){
+        this.endDate = endDate;
+    }
+
+    public Date getEndDate(){
+        return this.endDate;
     }
 
     public double getVolume() {

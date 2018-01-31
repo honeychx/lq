@@ -25,12 +25,11 @@ import com.fxcm.messaging.ISessionStatus;
 import com.fxcm.messaging.ITransportable;
 import com.luoquant.datacenter.fxcm.utils.MarketDataUtils;
 import org.apache.commons.io.FileUtils;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HistoryMiner implements IGenericMessageListener, IStatusMessageListener {
+    private static final Logger logger = LoggerFactory.getLogger(HistoryMiner.class);
     private static final String server = "http://www.fxcorporate.com/Hosts.jsp";
     private Instrument asset;
     private UTCDate startDate;
@@ -47,6 +46,7 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
     private UTCTimestamp openTimestamp;
     public boolean stillMining = true;
     public IFXCMTimingInterval interval;
+    private int counter;
 
     public HistoryMiner(String username, String password, String terminal, UTCDate startDate, UTCTimeOnly startTime,
                         Instrument asset, IFXCMTimingInterval interval) {
@@ -57,6 +57,7 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
         this.login = new FXCMLoginProperties(username, password, terminal, server);
         lineBuffer = new ArrayList<>();
         this.interval = interval;
+        this.counter = 0;
     }
 
     // HistoryMIner.java continued...
@@ -138,7 +139,15 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
     public String sendRequest(MarketDataRequest request) {
         try {
             // send the request message to the API.
+            request.setFXCMTimingInterval(this.interval);
             currentRequest = gateway.sendMessage(request);
+            this.counter += 1;
+            if (this.counter >= 1){
+                Thread.sleep(1000);
+                System.out.println("request counter is more than 10,counter is zero");
+//                System.out.println("current request ="+request);
+                this.counter = 0;
+            }
             // return the request id for authentication when messages would
             // arrive from the API.
             return currentRequest;
