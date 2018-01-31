@@ -4,19 +4,24 @@ import com.luoquant.datacenter.fxcm.CandleStick;
 import com.luoquant.datacenter.fxcm.utils.MarketDataUtils;
 import javafx.scene.chart.CategoryAxis;
 import org.apache.commons.io.FileUtils;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
+import org.jfree.chart.*;
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.CandlestickRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.DefaultHighLowDataset;
+import org.jfree.data.xy.OHLCDataset;
 import org.jfree.date.DateUtilities;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -53,21 +58,22 @@ public class MainCandleView extends ApplicationFrame {
         List<CandleStick> candleStickList = new ArrayList<>();
         List<File> fileList = new ArrayList<>();
         findAllFile(path, fileList);
-        for (File file : fileList.subList(fileList.size()-100,fileList.size()-1)) {
+        for (File file : fileList.subList(fileList.size() - 150, fileList.size() - 1)) {
             try {
                 List<CandleStick> eachList = MarketDataUtils.readCandleFromCsv(FileUtils.readLines(file, "utf-8"));
-                for (CandleStick candleStick : eachList){
+                for (CandleStick candleStick : eachList) {
                     if (candleStick.getLow() < yRangeMin)
                         yRangeMin = candleStick.getLow();
                     if (candleStick.getHigh() > yRangeMax)
                         yRangeMax = candleStick.getHigh();
                 }
-                logger.info("get candleStick total={}, from file={}", eachList.size(), file.getAbsolutePath());
                 candleStickList.addAll(eachList);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        yRangeMin = yRangeMin * .99;
+        yRangeMax = yRangeMax * 1.01;
         return candleStickList;
     }
 
@@ -97,19 +103,43 @@ public class MainCandleView extends ApplicationFrame {
         super(title);
 
         final DefaultHighLowDataset dataset = getDataSetFromDisk(path);
-                //createHighLowDataset();
+        //createHighLowDataset();
         final JFreeChart chart = createChart(dataset, title);
         chart.getXYPlot().setOrientation(PlotOrientation.VERTICAL);
         ValueAxis aaxis = chart.getXYPlot().getRangeAxis();
-        aaxis.setRange(yRangeMin,yRangeMax);
+        aaxis.setRange(yRangeMin, yRangeMax);
         chart.getXYPlot().setRangeAxis(aaxis);
+        try {
+            ChartUtilities.saveChartAsJPEG(new File("./data/" + title + ".jpg"), chart, 1600, 900);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         final ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
         setContentPane(chartPanel);
     }
 
+    public static JFreeChart createCandlestickChart(String title, String timeAxisLabel, String valueAxisLabel, OHLCDataset dataset, boolean legend) {
+        DateAxis timeAxis = new DateAxis(timeAxisLabel);
+        NumberAxis valueAxis = new NumberAxis(valueAxisLabel);
+        XYPlot plot = new XYPlot(dataset, timeAxis, valueAxis, (XYItemRenderer) null);
+        CandlestickRenderer candlestickRenderer = new CandlestickRenderer();
+        candlestickRenderer.setUpPaint(new Color(0, 96, 191));
+        candlestickRenderer.setDownPaint(new Color(219, 0, 0));
+        plot.setRenderer(candlestickRenderer);
+        JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
+
+        StandardChartTheme standardChartTheme = new StandardChartTheme("JFree");
+        standardChartTheme.setPlotBackgroundPaint(Color.WHITE);
+        ChartTheme currentTheme = standardChartTheme;
+        currentTheme.apply(chart);
+
+        return chart;
+    }
+
     private JFreeChart createChart(final DefaultHighLowDataset dataset, String title) {
-        final JFreeChart chart = ChartFactory.createCandlestickChart(
+        //ChartFactory.createCandlestickChart
+        final JFreeChart chart = createCandlestickChart(
                 title,
                 "Time",
                 "Price",
@@ -121,7 +151,8 @@ public class MainCandleView extends ApplicationFrame {
 
     public static void main(String[] args) throws Exception {
         String instrument = "AUDUSDD1";
-        String historyDataPath = "D:\\workshop\\github\\lq\\forex-data-center\\data\\history\\"+instrument;
+        String historyDataPath = "data/history/" + instrument;
+
         final MainCandleView demo = new MainCandleView(instrument, historyDataPath);
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
