@@ -16,20 +16,14 @@ import com.fxcm.external.api.transport.GatewayFactory;
 import com.fxcm.external.api.transport.IGateway;
 import com.fxcm.external.api.transport.listeners.IGenericMessageListener;
 import com.fxcm.external.api.transport.listeners.IStatusMessageListener;
-import com.fxcm.fix.FXCMTimingIntervalFactory;
-import com.fxcm.fix.IFixDefs;
-import com.fxcm.fix.Instrument;
-import com.fxcm.fix.NotDefinedException;
-import com.fxcm.fix.SubscriptionRequestTypeFactory;
-import com.fxcm.fix.UTCDate;
-import com.fxcm.fix.UTCTimeOnly;
-import com.fxcm.fix.UTCTimestamp;
+import com.fxcm.fix.*;
 import com.fxcm.fix.pretrade.MarketDataRequest;
 import com.fxcm.fix.pretrade.MarketDataRequestReject;
 import com.fxcm.fix.pretrade.MarketDataSnapshot;
 import com.fxcm.fix.pretrade.TradingSessionStatus;
 import com.fxcm.messaging.ISessionStatus;
 import com.fxcm.messaging.ITransportable;
+import com.luoquant.datacenter.fxcm.utils.MarketDataUtils;
 import org.apache.commons.io.FileUtils;
 
 import java.text.SimpleDateFormat;
@@ -48,19 +42,21 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
     private final HashMap<UTCDate, MarketDataSnapshot> historicalRates = new HashMap<>();
     private int dataCounter = 0;
     public List<CandleStick> candlesticksList = new ArrayList<CandleStick>();
-    private List<String> lineBuffer ;
+    private List<String> lineBuffer;
 
     private UTCTimestamp openTimestamp;
     public boolean stillMining = true;
+    public IFXCMTimingInterval interval;
 
     public HistoryMiner(String username, String password, String terminal, UTCDate startDate, UTCTimeOnly startTime,
-                        Instrument asset) {
+                        Instrument asset, IFXCMTimingInterval interval) {
         this.asset = asset;
         this.startDate = startDate;
         this.startTime = startTime;
         // create a local LoginProperty
         this.login = new FXCMLoginProperties(username, password, terminal, server);
         lineBuffer = new ArrayList<>();
+        this.interval = interval;
     }
 
     // HistoryMIner.java continued...
@@ -125,7 +121,12 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
             // request the response to be formated FXCM style
             mdr.setResponseFormat(IFixDefs.MSGTYPE_FXCMRESPONSE);
             // set the interval of the data candles
-            mdr.setFXCMTimingInterval(FXCMTimingIntervalFactory.MIN1);
+            System.out.println("this.interval=" + this.interval);
+            if (this.interval != null) {
+                mdr.setFXCMTimingInterval(this.interval);
+            } else {
+                mdr.setFXCMTimingInterval(FXCMTimingIntervalFactory.MIN1);
+            }
             mdr.setFXCMStartDate(startDate);
             mdr.setFXCMStartTime(startTime);
             mdr.addRelatedSymbol(asset);
@@ -160,14 +161,23 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
 
     // HistoryMIner.java continued...
     public void messageArrived(MarketDataSnapshot mds) {
-        System.out.println("arrive market data======mds.getRequestID()="+mds.getRequestID()+"\t"+mds);
+//        System.out.println("arrive market data======mds.getRequestID()="+mds.getRequestID()+"\t"+mds);
         if (mds.getRequestID() != null && mds.getRequestID().equals(currentRequest)) {
+            lineBuffer = new ArrayList<>(1);
             historicalRates.put(mds.getDate(), mds);
-            lineBuffer.add(mds.toString());
+            lineBuffer.add(MarketDataUtils.formatToCsvLine(mds));
             try {
-                FileUtils.writeLines(new File("F:\\data\\history/" + "audusd" + ".txt"), "utf-8",
+                String fileName = "data/history/" +
+                        this.asset.getSymbol().replace("/", "") +
+                        mds.getFXCMTimingInterval().getLabel().replace(" ", "") + "_" +
+                        MarketDataUtils.formatDateToYYMMDD(mds.getDate().toDate())
+                        + ".data";
+                System.out.println("write to file:"+fileName);
+                FileUtils.writeLines(new File(fileName),"utf-8",
                         lineBuffer, "\n", true);
-            }catch (IOException e){
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NotDefinedException e) {
                 e.printStackTrace();
             }
         }

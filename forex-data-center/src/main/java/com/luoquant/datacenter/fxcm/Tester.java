@@ -5,15 +5,13 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import com.fxcm.fix.Instrument;
-import com.fxcm.fix.UTCDate;
-import com.fxcm.fix.UTCTimeOnly;
+import com.fxcm.fix.*;
 import com.luoquant.datacenter.fxcm.strategy.RsiStrategy;
 import com.luoquant.datacenter.fxcm.strategy.base.Strategy;
 import com.luoquant.datacenter.fxcm.strategy.base.StrategyResult;
 
 public class Tester {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         List<CandleStick> candleSticksList;
         UTCDate startDate;
         UTCTimeOnly startTime;
@@ -25,7 +23,7 @@ public class Tester {
         Instrument asset = new Instrument(instrument);
         // get the current time and roll back 1 year
         Calendar instance = Calendar.getInstance();
-        instance.roll(Calendar.YEAR, -2);
+        instance.roll(Calendar.YEAR, -1);
         System.out.println(instance.getTime());
         // set the starting date and time of the historical data
         startDate = new UTCDate(instance.getTime());
@@ -33,7 +31,8 @@ public class Tester {
         try {
             // create an instance of the JavaFixHistoryMiner
             /*70934807 7519 http://www.fxcorporate.com*/
-            HistoryMiner miner = new HistoryMiner("70934807", "7519", "Demo", startDate, startTime, asset);
+            HistoryMiner miner = new HistoryMiner("70934807", "7519", "Demo",
+                    startDate, startTime, asset, FXCMTimingIntervalFactory.HOUR4);
             // login to the api
             miner.login(miner, miner);
             // keep mining for historical data before logging out
