@@ -151,6 +151,7 @@ public class MainCandleView extends ApplicationFrame {
 
     public static void main(String[] args) throws Exception {
         String instrument = "AUDUSDD1";
+        instrument = "EURUSDD1";
         String historyDataPath = "data/history/" + instrument;
 
         final MainCandleView demo = new MainCandleView(instrument, historyDataPath);
