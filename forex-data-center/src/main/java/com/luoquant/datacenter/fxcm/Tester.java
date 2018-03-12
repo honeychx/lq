@@ -11,15 +11,15 @@ import com.luoquant.datacenter.fxcm.strategy.base.Strategy;
 import com.luoquant.datacenter.fxcm.strategy.base.StrategyResult;
 
 public class Tester {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         List<CandleStick> candleSticksList;
         UTCDate startDate;
         UTCTimeOnly startTime;
-        double stopLossPerc=0.003;
-        double takeProfitPerc=0.003;
-        int bottomRSI=10;
-        List <StrategyResult> strategySummary = new ArrayList<StrategyResult>();
-        String instrument = "AUD/USD";
+        double stopLossPerc = 0.003;
+        double takeProfitPerc = 0.003;
+        int bottomRSI = 10;
+        List<StrategyResult> strategySummary = new ArrayList<StrategyResult>();
+        String instrument = "EUR/USD";
         Instrument asset = new Instrument(instrument);
         // get the current time and roll back 1 year
         Calendar instance = Calendar.getInstance();
@@ -45,7 +45,7 @@ public class Tester {
             // convert rates to candlesticks
             miner.convertHistoricalRatesToCandleSticks(); // display the collected rates
             miner.displayHistory();
-            if (true){
+            if (true) {
                 System.exit(1);
             }
 
@@ -88,7 +88,7 @@ public class Tester {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
 
         }
     }
