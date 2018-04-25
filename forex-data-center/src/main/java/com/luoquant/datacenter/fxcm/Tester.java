@@ -1,9 +1,6 @@
 package com.luoquant.datacenter.fxcm;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import com.fxcm.fix.*;
 import com.luoquant.datacenter.fxcm.strategy.RsiStrategy;
@@ -19,11 +16,11 @@ public class Tester {
         double takeProfitPerc = 0.003;
         int bottomRSI = 10;
         List<StrategyResult> strategySummary = new ArrayList<StrategyResult>();
-        String instrument = "EUR/USD";
+        String instrument = "AUD/USD";
         Instrument asset = new Instrument(instrument);
         // get the current time and roll back 1 year
         Calendar instance = Calendar.getInstance();
-        instance.roll(Calendar.YEAR, -10);
+        instance.roll(Calendar.YEAR, -5);
         System.out.println(instance.getTime());
         // set the starting date and time of the historical data
         startDate = new UTCDate(instance.getTime());
@@ -31,8 +28,11 @@ public class Tester {
         try {
             // create an instance of the JavaFixHistoryMiner
             /*70934807 7519 http://www.fxcorporate.com*/
-            HistoryMiner miner = new HistoryMiner("70934807", "7519", "Demo",
-                    startDate, startTime, asset, FXCMTimingIntervalFactory.DAY1);
+            UTCDate endDate = new UTCDate(new Date(2018,7,4,0,0,0));
+            UTCTimeOnly endTime = new UTCTimeOnly((new Date(2018,7,4,0,0,0).getTime()));
+            HistoryMiner miner = new HistoryMiner("70982917", "134", "Demo",
+                    startDate, startTime, endDate, endTime,
+                    asset, FXCMTimingIntervalFactory.MIN1);
             // login to the api
             miner.login(miner, miner);
             // keep mining for historical data before logging out

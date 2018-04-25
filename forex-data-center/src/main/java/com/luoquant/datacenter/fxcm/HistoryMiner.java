@@ -34,6 +34,8 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
     private Instrument asset;
     private UTCDate startDate;
     private UTCTimeOnly startTime;
+    private UTCDate endDate;
+    private UTCTimeOnly endTime;
     private FXCMLoginProperties login;
 
     private IGateway gateway;
@@ -49,7 +51,14 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
     private int counter;
 
     public HistoryMiner(String username, String password, String terminal, UTCDate startDate, UTCTimeOnly startTime,
+                        UTCDate endDate, UTCTimeOnly endTime,
                         Instrument asset, IFXCMTimingInterval interval) {
+        if (this.endDate != null) {
+            this.endDate = endDate;
+        }
+        if (this.endTime != null) {
+            this.endTime = endTime;
+        }
         this.asset = asset;
         this.startDate = startDate;
         this.startTime = startTime;
@@ -58,6 +67,22 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
         lineBuffer = new ArrayList<>();
         this.interval = interval;
         this.counter = 0;
+    }
+
+    public UTCDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(UTCDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public UTCTimeOnly getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(UTCTimeOnly endTime) {
+        this.endTime = endTime;
     }
 
     // HistoryMIner.java continued...
@@ -130,6 +155,13 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
             }
             mdr.setFXCMStartDate(startDate);
             mdr.setFXCMStartTime(startTime);
+            if (this.endDate != null){
+                System.out.println("set endDate="+this.endDate.toString());
+                mdr.setFXCMEndDate(this.endDate);
+            }
+            if (this.endTime != null){
+                mdr.setFXCMEndTime(this.endTime);
+            }
             mdr.addRelatedSymbol(asset);
             // send request for historical data
             currentRequest = sendRequest(mdr);
@@ -176,7 +208,9 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
             historicalRates.put(mds.getDate(), mds);
             lineBuffer.add(MarketDataUtils.formatToCsvLine(mds));
             try {
-                String fileName = "data/history/" +
+                String symbol_period = this.asset.getSymbol().replace("/", "") +
+                        mds.getFXCMTimingInterval().getLabel().replace(" ", "");
+                String fileName = "data/history/" + symbol_period + "/" +
                         this.asset.getSymbol().replace("/", "") +
                         mds.getFXCMTimingInterval().getLabel().replace(" ", "") + "_" +
                         MarketDataUtils.formatDateToYYMMDD(mds.getDate().toDate())
@@ -184,6 +218,12 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
                 System.out.println("write to file:"+fileName);
                 FileUtils.writeLines(new File(fileName),"utf-8",
                         lineBuffer, "\n", true);
+                try{
+                    System.out.println("prepare to sleep 100 ms");
+                    Thread.sleep(100);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NotDefinedException e) {
@@ -195,7 +235,12 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
             if (openTimestamp == null) {
                 // get the time stamp of first candle of this batch. use it to
                 // set the end time of next batch.
-                openTimestamp = mds.getOpenTimestamp();
+                if (this.endTime != null){
+                    openTimestamp = this.endDate;
+                    mds.setOpenTimestamp(openTimestamp);
+                }else {
+                    openTimestamp = mds.getOpenTimestamp();
+                }
                 System.out.println("first\t= " + mds.getOpenTimestamp() + " = " + mds.getRequestID());
             }
             if (mds.getFXCMContinuousFlag() == IFixDefs.FXCMCONTINUOUS_END) { // end

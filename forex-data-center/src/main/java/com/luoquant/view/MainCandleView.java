@@ -58,7 +58,9 @@ public class MainCandleView extends ApplicationFrame {
         List<CandleStick> candleStickList = new ArrayList<>();
         List<File> fileList = new ArrayList<>();
         findAllFile(path, fileList);
-        for (File file : fileList.subList(fileList.size() - 150, fileList.size() - 1)) {
+        logger.info("get total {}, from path {}", fileList.size(), path);
+        for (File file : fileList.subList(fileList.size() - Math.min(150, fileList.size()),
+                fileList.size() - 1)) {
             try {
                 List<CandleStick> eachList = MarketDataUtils.readCandleFromCsv(FileUtils.readLines(file, "utf-8"));
                 for (CandleStick candleStick : eachList) {
@@ -96,6 +98,7 @@ public class MainCandleView extends ApplicationFrame {
             volumeList[i] = candleStick.getVolume();
             i += 1;
         }
+        logger.info("get history data from {}, total {}", path, i);
         return new DefaultHighLowDataset(path, dateList, highList, lowList, openList, closeList, volumeList);
     }
 
@@ -150,9 +153,10 @@ public class MainCandleView extends ApplicationFrame {
     }
 
     public static void main(String[] args) throws Exception {
-        String instrument = "AUDUSDD1";
-        instrument = "EURUSDD1";
-        String historyDataPath = "data/history/" + instrument;
+        String instrument = "AUDUSDH4";
+//        instrument = "EURUSD1Day";
+        String historyDataPath = "data/history/" ;
+//                + instrument;
 
         final MainCandleView demo = new MainCandleView(instrument, historyDataPath);
         demo.pack();
