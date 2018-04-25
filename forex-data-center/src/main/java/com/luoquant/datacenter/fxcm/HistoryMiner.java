@@ -218,12 +218,12 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
                 System.out.println("write to file:"+fileName);
                 FileUtils.writeLines(new File(fileName),"utf-8",
                         lineBuffer, "\n", true);
-                try{
-                    System.out.println("prepare to sleep 100 ms");
-                    Thread.sleep(100);
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
+//                try{
+//                    System.out.println("prepare to sleep 100 ms");
+//                    Thread.sleep(100);
+//                }catch (InterruptedException e){
+//                    e.printStackTrace();
+//                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NotDefinedException e) {
