@@ -6,8 +6,11 @@ import com.fxcm.fix.*;
 import com.luoquant.datacenter.fxcm.strategy.RsiStrategy;
 import com.luoquant.datacenter.fxcm.strategy.base.Strategy;
 import com.luoquant.datacenter.fxcm.strategy.base.StrategyResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Tester {
+    public static Logger logger = LoggerFactory.getLogger(Tester.class);
     public static void main(String[] args) throws Exception {
         List<CandleStick> candleSticksList;
         UTCDate startDate;
@@ -37,7 +40,7 @@ public class Tester {
         // get the current time and roll back 1 year
         Calendar instance = Calendar.getInstance();
         instance.roll(Calendar.YEAR, -5);
-        System.out.println(instance.getTime());
+        logger.info("instance time={}",instance.getTime());
         // set the starting date and time of the historical data
         startDate = new UTCDate(instance.getTime());
         startTime = new UTCTimeOnly(instance.getTime());
@@ -48,7 +51,7 @@ public class Tester {
             endDate = new UTCDate(new Date());
             UTCTimeOnly endTime = new UTCTimeOnly((new Date(2018,7,4,0,0,0).getTime()));
             endTime = new UTCTimeOnly(new Date());
-            System.out.println("this.interval:"+interval);
+            logger.info("this.interval:{}",interval);
             HistoryMiner miner = new HistoryMiner("70982917", "134", "Demo",
                     startDate, startTime, endDate, endTime,
                     asset, interval);

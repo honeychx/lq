@@ -152,11 +152,11 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
             } else {
                 mdr.setFXCMTimingInterval(FXCMTimingIntervalFactory.MIN1);
             }
-            System.out.println("this.interval=" + this.interval);
+            logger.info("this.interval {}" , this.interval);
             mdr.setFXCMStartDate(startDate);
             mdr.setFXCMStartTime(startTime);
             if (this.endDate != null){
-                System.out.println("set endDate="+this.endDate.toString());
+                logger.info("set endDate {}",this.endDate.toString());
                 mdr.setFXCMEndDate(this.endDate);
             }
             if (this.endTime != null){
@@ -249,7 +249,11 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
                 MarketDataRequest mdr = new MarketDataRequest();
                 mdr.setSubscriptionRequestType(SubscriptionRequestTypeFactory.SNAPSHOT);
                 mdr.setResponseFormat(IFixDefs.MSGTYPE_FXCMRESPONSE);
-                mdr.setFXCMTimingInterval(FXCMTimingIntervalFactory.MIN1);
+                if (this.interval != null){
+                    mdr.setFXCMTimingInterval(this.interval);
+                }else {
+                    mdr.setFXCMTimingInterval(FXCMTimingIntervalFactory.MIN1);
+                }
                 mdr.setFXCMStartDate(startDate);
                 mdr.setFXCMStartTime(startTime);
                 mdr.setFXCMEndDate(new UTCDate(openTimestamp));
