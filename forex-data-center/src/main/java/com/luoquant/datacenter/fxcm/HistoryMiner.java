@@ -147,12 +147,12 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
             // request the response to be formated FXCM style
             mdr.setResponseFormat(IFixDefs.MSGTYPE_FXCMRESPONSE);
             // set the interval of the data candles
-            System.out.println("this.interval=" + this.interval);
             if (this.interval != null) {
                 mdr.setFXCMTimingInterval(this.interval);
             } else {
                 mdr.setFXCMTimingInterval(FXCMTimingIntervalFactory.MIN1);
             }
+            System.out.println("this.interval=" + this.interval);
             mdr.setFXCMStartDate(startDate);
             mdr.setFXCMStartTime(startTime);
             if (this.endDate != null){
@@ -237,7 +237,6 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
                 // set the end time of next batch.
                 if (this.endTime != null){
                     openTimestamp = this.endDate;
-                    mds.setOpenTimestamp(openTimestamp);
                 }else {
                     openTimestamp = mds.getOpenTimestamp();
                 }

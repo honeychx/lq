@@ -48,6 +48,7 @@ public class Tester {
             endDate = new UTCDate(new Date());
             UTCTimeOnly endTime = new UTCTimeOnly((new Date(2018,7,4,0,0,0).getTime()));
             endTime = new UTCTimeOnly(new Date());
+            System.out.println("this.interval:"+interval);
             HistoryMiner miner = new HistoryMiner("70982917", "134", "Demo",
                     startDate, startTime, endDate, endTime,
                     asset, interval);
