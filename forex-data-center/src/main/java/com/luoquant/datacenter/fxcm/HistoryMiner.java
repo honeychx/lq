@@ -313,8 +313,8 @@ public class HistoryMiner implements IGenericMessageListener, IStatusMessageList
         }
         // give the table column headings
         System.out.println("Date\t Time\t\tOBid\tCBid\tHBid\tLBid");
-        for (CandleStick candlestick : candlesticksList) {
-            System.out.println(candlestick);
+        for (CandleStick candlestick : candlesticksList.subList(0,Math.min(100,candlesticksList.size()))) {
+            logger.info(candlestick.toString());
             //System.out.println( candlestick.getDate() + "\t" + candlestick.getOpen() + "\t" +  candlestick.getHigh() + "\t" +  candlestick.getLow() + "\t" +  candlestick.getCloseBid());
         }
     }
