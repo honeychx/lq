@@ -2,7 +2,6 @@ package com.luoquant.view;
 
 import com.luoquant.datacenter.fxcm.CandleStick;
 import com.luoquant.datacenter.fxcm.utils.MarketDataUtils;
-import javafx.scene.chart.CategoryAxis;
 import org.apache.commons.io.FileUtils;
 import org.jfree.chart.*;
 import org.jfree.chart.axis.DateAxis;
