@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class Tester {
     public static Logger logger = LoggerFactory.getLogger(Tester.class);
+
     public static void main(String[] args) throws Exception {
         List<CandleStick> candleSticksList;
         UTCDate startDate;
@@ -19,20 +20,22 @@ public class Tester {
         double takeProfitPerc = 0.003;
         int bottomRSI = 10;
         List<StrategyResult> strategySummary = new ArrayList<StrategyResult>();
-        String instrument = "AUD/USD";
+        String instrument = "EUR/USD";
         IFXCMTimingInterval interval;
         interval = FXCMTimingIntervalFactory.MIN1;
-        if (args.length > 0){
+        if (args.length > 0) {
             instrument = args[0];
         }
-        if (args.length > 1){
-            if ( args[1].equals("m1")) {
+        if (args.length > 1) {
+            if (args[1].equals("m1")) {
                 interval = FXCMTimingIntervalFactory.MIN1;
-            }else if (args[1].equals("h4")){
+            } else if (args[1].equals("m5")) {
+                interval = FXCMTimingIntervalFactory.MIN5;
+            } else if (args[1].equals("h4")) {
                 interval = FXCMTimingIntervalFactory.HOUR4;
-            }else if (args[1].equals("h1")){
+            } else if (args[1].equals("h1")) {
                 interval = FXCMTimingIntervalFactory.HOUR1;
-            }else if (args[1].equals("d1")){
+            } else if (args[1].equals("d1")) {
                 interval = FXCMTimingIntervalFactory.DAY1;
             }
         }
@@ -40,19 +43,19 @@ public class Tester {
         // get the current time and roll back 1 year
         Calendar instance = Calendar.getInstance();
         instance.roll(Calendar.YEAR, -5);
-        logger.info("instance time={}",instance.getTime());
+        logger.info("instance time={}", instance.getTime());
         // set the starting date and time of the historical data
         startDate = new UTCDate(instance.getTime());
         startTime = new UTCTimeOnly(instance.getTime());
         try {
             // create an instance of the JavaFixHistoryMiner
             /*70934807 7519 http://www.fxcorporate.com*/
-            UTCDate endDate = new UTCDate(new Date(2018,7,4,0,0,0));
+            UTCDate endDate = new UTCDate(new Date(2018, 7, 4, 0, 0, 0));
             endDate = new UTCDate(new Date());
-            UTCTimeOnly endTime = new UTCTimeOnly((new Date(2018,7,4,0,0,0).getTime()));
+            UTCTimeOnly endTime = new UTCTimeOnly((new Date(2018, 7, 4, 0, 0, 0).getTime()));
             endTime = new UTCTimeOnly(new Date());
-            logger.info("this.interval:{}",interval);
-            HistoryMiner miner = new HistoryMiner("70982917", "134", "Demo",
+            logger.info("this.interval:{}", interval);
+            HistoryMiner miner = new HistoryMiner("701007642", "7673", "Demo",
                     startDate, startTime, endDate, endTime,
                     asset, interval);
             // login to the api
